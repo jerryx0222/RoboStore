@@ -48,9 +48,10 @@ public class RobostoreApplication {
 
 		// 處理來自路徑"/testPoint"的HTTP GET請求
 	@GetMapping("/testPoint")
-	public Point testPoint(){
-		Point data=new Point(10,11);
-		return data;
+	public List testPoint(){
+		Point data1=new Point(10,11);
+		Point data2=new Point(12,13);
+		return List.of(data1,data2);
 	}
 
 	// 處理來自路徑"echo?name=名字"的HTTP GET請求
@@ -61,8 +62,8 @@ public class RobostoreApplication {
 
 	// 處理來自路徑"add?n1=整數&n2=整數"的HTTP GET請求
 	@GetMapping("/add")
-	public String add(@RequestParam int n1, @RequestParam int n2){
-		return "Hello World Spring boot-" + (n1+n2) + "!";
+	public Map add(@RequestParam int n1, @RequestParam int n2){
+		return Map.of("Add result:",(n1+n2));
 	}
 
 
