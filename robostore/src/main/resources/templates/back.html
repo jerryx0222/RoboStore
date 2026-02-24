@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcon Back</title>
+</head>
+<body>
+    <h3>Wlecome back</h3>
+    <th:block th:if="${name}==null">
+        <div>I donot know you!</div>
+    </th:block>
+    <th:block th:unless="${name}==null">
+        <div th:text="${name}"></div>
+    </th:block>
+    
+</body>
+</html>
