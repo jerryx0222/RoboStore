@@ -1,5 +1,7 @@
 package com.robostore;
 
+import java.util.List;
+import java.util.Map;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +27,30 @@ public class RobostoreApplication {
 	
 	// 處理來自路徑"/test"的HTTP GET請求
 	@GetMapping("/test")
-	public String test(){
-		return "Hello World Spring boot-test!";
+	public int[] test(){
+		int[] data=new int[]{10,11,12,13};
+		return data;
+	}
+
+	// 處理來自路徑"/testList"的HTTP GET請求
+	@GetMapping("/testList")
+	public List testList(){
+		List data=List.of(10,11,12,13);
+		return data;
+	}
+
+	// 處理來自路徑"/testMap"的HTTP GET請求
+	@GetMapping("/testMap")
+	public Map testMap(){
+		Map data=Map.of(10,11,12,13);
+		return data;
+	}
+
+		// 處理來自路徑"/testPoint"的HTTP GET請求
+	@GetMapping("/testPoint")
+	public Point testPoint(){
+		Point data=new Point(10,11);
+		return data;
 	}
 
 	// 處理來自路徑"echo?name=名字"的HTTP GET請求
