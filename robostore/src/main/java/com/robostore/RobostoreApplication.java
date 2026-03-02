@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.sql.DriverManager;
@@ -15,6 +16,8 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @SpringBootApplication
@@ -137,12 +140,27 @@ public class RobostoreApplication {
 		return "Hello World Spring boot-" + name + "!";
 	}
 
-	// 處理來自路徑"add?n1=整數&n2=整數"的HTTP GET請求
-	@GetMapping("/add")
-	public Map<String,Integer> add(@RequestParam int n1, @RequestParam int n2){
+	// 處理來自路徑"add1?n1=整數&n2=整數"的HTTP GET請求
+	@GetMapping("/add1")
+	public Map<String,Integer> add1(@RequestParam int n1, @RequestParam int n2){
 		return Map.of("Add result:",(n1+n2));
 	}
 
+	// 處理來自路徑"add?n1=整數&n2=整數"的HTTP GET請求
+	@GetMapping("/addG")
+	public String addG(@RequestParam int n1, @RequestParam int n2){
+		return "Answer is " + (n1+n2);
+	}
+
+	// 處理來自路徑"add?n1=整數&n2=整數"的HTTP POST請求
+	@PostMapping("add")
+	public String postMethodName(@RequestParam int n1, @RequestParam int n2){
+		return "Answer is " + (n1+n2);
+	}
+	
+	public String add(@RequestParam int n1, @RequestParam int n2){
+		return "Answer is " + (n1+n2);
+	}
 
 	// 處理來自路徑"/user/字串"的HTTP GET請求
 	@GetMapping("/user/{myString}")
