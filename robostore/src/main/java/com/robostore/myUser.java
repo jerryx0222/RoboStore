@@ -47,6 +47,12 @@ public class myUser {
     @Column
     private int level;
 
+    @Column(nullable = false)
+    private boolean phoneVerified = false;
+
+    @Column(nullable = false)
+    private boolean emailVerified = false;
+
     // ─── Constructors ─────────────────────────────────────────────────────────
 
     public myUser() {}
@@ -77,4 +83,12 @@ public class myUser {
 
     public int getLevel() { return level; }
     public void setLevel(int level) { this.level = level; }
+
+    public boolean isPhoneVerified() { return phoneVerified; }
+    public void setPhoneVerified(boolean phoneVerified) { this.phoneVerified = phoneVerified; }
+
+    public boolean isEmailVerified() { return emailVerified; }
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified; }
+
+    public boolean isVerified() { return phoneVerified && emailVerified; }
 }

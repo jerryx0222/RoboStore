@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { login } from '../stores/auth'
 
@@ -11,10 +11,88 @@ const password = ref('')
 const errorMsg = ref('')
 const loading = ref(false)
 
+// ─── Canvas 圖形驗證碼 ────────────────────────────────────────────────────────
+// 排除易混淆字元 (0/O, 1/I/L)
+const CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
+
+function genCode(len = 5): string {
+  let s = ''
+  for (let i = 0; i < len; i++) s += CHARS[Math.floor(Math.random() * CHARS.length)]
+  return s
+}
+
+const captchaCode = ref(genCode())
+const captchaCanvas = ref<HTMLCanvasElement | null>(null)
+const captchaInput = ref('')
+const captchaError = ref(false)
+
+function drawCaptcha() {
+  const canvas = captchaCanvas.value
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')!
+  const w = canvas.width, h = canvas.height
+
+  // 背景
+  ctx.fillStyle = '#f5ecd4'
+  ctx.fillRect(0, 0, w, h)
+
+  // 干擾曲線
+  for (let i = 0; i < 5; i++) {
+    ctx.strokeStyle = `hsl(${Math.random() * 360},45%,72%)`
+    ctx.lineWidth = 1.5
+    ctx.beginPath()
+    ctx.moveTo(Math.random() * w, Math.random() * h)
+    ctx.bezierCurveTo(
+      Math.random() * w, Math.random() * h,
+      Math.random() * w, Math.random() * h,
+      Math.random() * w, Math.random() * h,
+    )
+    ctx.stroke()
+  }
+
+  // 雜點
+  for (let i = 0; i < 50; i++) {
+    ctx.fillStyle = `hsl(${Math.random() * 360},40%,65%)`
+    ctx.beginPath()
+    ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 1.5 + 0.3, 0, Math.PI * 2)
+    ctx.fill()
+  }
+
+  // 字元（旋轉 + 偏移 + 隨機色）
+  const charW = w / captchaCode.value.length
+  captchaCode.value.split('').forEach((ch, i) => {
+    ctx.save()
+    ctx.translate(charW * i + charW / 2, h / 2)
+    ctx.rotate((Math.random() - 0.5) * 0.55)
+    ctx.font = `bold ${23 + Math.random() * 7}px monospace`
+    ctx.fillStyle = `hsl(${Math.random() * 360},65%,28%)`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(ch, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 6)
+    ctx.restore()
+  })
+}
+
+onMounted(drawCaptcha)
+watch(captchaCode, () => nextTick(drawCaptcha))
+
+function refreshCaptcha() {
+  captchaCode.value = genCode()
+  captchaInput.value = ''
+  captchaError.value = false
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 async function handleLogin() {
   errorMsg.value = ''
+  captchaError.value = false
   if (!account.value || !password.value) {
     errorMsg.value = '請填寫帳號與密碼'
+    return
+  }
+  if (captchaInput.value.toUpperCase() !== captchaCode.value) {
+    captchaError.value = true
+    refreshCaptcha()
     return
   }
   loading.value = true
@@ -25,6 +103,7 @@ async function handleLogin() {
     router.push(redirect)
   } else {
     errorMsg.value = '帳號或密碼錯誤，請重新輸入'
+    refreshCaptcha()
   }
 }
 </script>
@@ -46,7 +125,7 @@ async function handleLogin() {
             v-model="account"
             type="text"
             class="form-input"
-            placeholder="請輸入電子信箱"
+            placeholder="請輸入電子信箱、帳號名稱或電話"
             autocomplete="username"
           />
         </div>
@@ -59,6 +138,24 @@ async function handleLogin() {
             placeholder="請輸入密碼"
             autocomplete="current-password"
           />
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">驗證碼</label>
+          <div class="captcha-wrap">
+            <canvas ref="captchaCanvas" width="160" height="50" class="captcha-canvas"></canvas>
+            <button type="button" class="btn-refresh" @click="refreshCaptcha" title="換一張">↺</button>
+          </div>
+          <input
+            v-model="captchaInput"
+            type="text"
+            class="form-input"
+            placeholder="請輸入圖中文字（不分大小寫）"
+            autocomplete="off"
+            maxlength="5"
+            style="margin-top: 6px;"
+          />
+          <div v-if="captchaError" class="captcha-error">驗證碼錯誤，請重新輸入</div>
         </div>
 
         <div v-if="errorMsg" class="error-msg">{{ errorMsg }}</div>
@@ -173,5 +270,39 @@ async function handleLogin() {
 .btn-login:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+.captcha-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.captcha-canvas {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  display: block;
+}
+
+.btn-refresh {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+}
+
+.btn-refresh:hover {
+  background: #f0f0f0;
+  color: #444;
+}
+
+.captcha-error {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #c03020;
 }
 </style>
