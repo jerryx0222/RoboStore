@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: robostore
+
+  # -----------------------------------------------
+  # 切換資料庫：改此處的值即可
+  #   postgresql  →  使用 PostgreSQL
+  #   mysql       →  使用 MySQL
+  # -----------------------------------------------
+  profiles:
+    active: postgresql
+
+server:
+  port: 8080
