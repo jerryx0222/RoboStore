@@ -15,6 +15,17 @@ const selectedOrder = ref(orders.value[0]!)
 function selectOrder(order: (typeof orders.value)[0]) {
   selectedOrder.value = order
 }
+
+const LEVEL_LABELS: Record<number, string> = {
+  0: '系統開發者', 1: '系統管理者', 2: '系統使用者',
+  10: '廠商開發者', 11: '廠商管理者', 12: '廠商使用者',
+  20: '個人開發者', 21: '個人管理者', 22: '個人使用者',
+  99: '訪客',
+}
+
+function levelLabel(level: number): string {
+  return LEVEL_LABELS[level] ?? `Level ${level}`
+}
 </script>
 
 <template>
@@ -36,11 +47,7 @@ function selectOrder(order: (typeof orders.value)[0]) {
             </tr>
             <tr>
               <th>會員等級</th>
-              <td>{{ member.level }}</td>
-            </tr>
-            <tr>
-              <th>加入日期</th>
-              <td>{{ member.joinDate }}</td>
+              <td>{{ levelLabel(member.level) }}</td>
             </tr>
           </tbody>
         </table>

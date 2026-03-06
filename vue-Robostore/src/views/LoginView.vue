@@ -68,11 +68,6 @@ async function handleLogin() {
         </button>
       </form>
 
-      <div class="login-hint">
-        <div class="hint-title">測試帳號</div>
-        <div class="hint-row">帳號：wang_ming@email.com　密碼：123456</div>
-        <div class="hint-row">帳號：admin@robostore.com　密碼：admin123</div>
-      </div>
     </div>
   </div>
 </template>
@@ -178,23 +173,5 @@ async function handleLogin() {
 .btn-login:disabled {
   opacity: 0.6;
   cursor: default;
-}
-
-.login-hint {
-  background: #f8f4e8;
-  border-top: 1px solid #e8d890;
-  padding: 12px 24px;
-  font-size: 12px;
-  color: #888;
-}
-
-.hint-title {
-  font-weight: bold;
-  color: #a08030;
-  margin-bottom: 4px;
-}
-
-.hint-row {
-  margin-bottom: 2px;
 }
 </style>

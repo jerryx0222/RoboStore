@@ -27,6 +27,9 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private MyUserRepository myUserRepository;
+
     @Value("${spring.datasource.url}")
     private String datasourceUrl;
 
@@ -45,7 +48,26 @@ public class DatabaseInitializer implements CommandLineRunner {
         } else {
             checkAndInitPostgreSQL();
         }
+        seedDefaultUsers();
         System.out.println("=======================================\n");
+    }
+
+    // ─── 預設帳號 ─────────────────────────────────────────────────────────────
+
+    private void seedDefaultUsers() {
+        if (!myUserRepository.existsByLevel(myUser.LEVEL_SYSTEM_DEV)) {
+            myUser superUser = new myUser(
+                "supernan",
+                "jerryx0222@gmail.com",
+                "hcs09871234",
+                "0952666742",
+                myUser.LEVEL_SYSTEM_DEV
+            );
+            myUserRepository.save(superUser);
+            System.out.println("✔ 預設系統開發者帳號 [supernan] 建立成功");
+        } else {
+            System.out.println("✔ 預設系統開發者帳號已存在");
+        }
     }
 
     // ─── PostgreSQL ───────────────────────────────────────────────────────────

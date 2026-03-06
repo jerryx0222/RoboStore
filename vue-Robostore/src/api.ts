@@ -12,8 +12,7 @@ export interface Product {
 export interface UserInfo {
   account: string
   name: string
-  level: string
-  joinDate: string
+  level: number
 }
 
 export async function fetchProducts(category: string): Promise<Product[]> {
