@@ -8,7 +8,7 @@ spring:
   #   mysql       →  使用 MySQL
   # -----------------------------------------------
   profiles:
-    active: postgresql
+    active: mysql
 
 server:
   port: 8080
