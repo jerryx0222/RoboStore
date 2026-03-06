@@ -1,0 +1,23 @@
+@import './base.css';
+
+:root {
+  --header-bg: #f0ddb0;
+  --nav-active-bg: #c8a030;
+  --nav-active-text: #fff;
+  --sidebar-bg: #6b7a3d;
+  --sidebar-hover-bg: #8a9e50;
+  --sidebar-text: #fff;
+  --sidebar-active-bg: #4f5c2e;
+  --btn-primary: #e07020;
+  --btn-primary-hover: #c05010;
+  --btn-cart: #e07020;
+  --content-bg: #fff;
+  --border-color: #ddd;
+  --price-color: #c03020;
+  --section-title-bg: #f0ddb0;
+}
+
+#app {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
