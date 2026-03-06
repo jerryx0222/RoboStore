@@ -10,7 +10,7 @@ const orders = ref([
   { id: '163001', date: '2023-04-10', amount: 1100, status: '已批准', statusClass: 'approved' },
 ])
 
-const selectedOrder = ref(orders.value[0])
+const selectedOrder = ref(orders.value[0]!)
 
 function selectOrder(order: (typeof orders.value)[0]) {
   selectedOrder.value = order

@@ -45,12 +45,6 @@ public class RobostoreApplication {
 		}
 	}
 
-	// 處理來自路徑"/"的HTTP GET請求
-	@GetMapping("/")
-	public String index(){
-		return "Hello World Spring boot!";
-	}
-	
 
 	private String[] executeMySQL(){
 			Connection con=null;

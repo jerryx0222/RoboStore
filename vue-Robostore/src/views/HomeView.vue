@@ -1,24 +1,23 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { addToCart } from '../stores/cart'
+import { fetchHomeProducts, type Product } from '../api'
 
 const router = useRouter()
 
-const newProducts = [
-  { id: 1, name: '招牌珍珠奶茶', price: 65, color: '#c8864a' },
-  { id: 2, name: '蜂蜜烤雞腿便當', price: 120, color: '#8a6030' },
-  { id: 3, name: '宇治抹茶拿鐵', price: 75, color: '#6a8a3a' },
-  { id: 4, name: '蒜香排骨便當', price: 130, color: '#a05030' },
-  { id: 5, name: '芒果西米露', price: 55, color: '#d4a020' },
-  { id: 6, name: '巧克力鬆餅', price: 85, color: '#6a4020' },
-]
+const newProducts = ref<Product[]>([])
+const chefRecommends = ref<Product[]>([])
 
-const chefRecommends = [
-  { id: 7, name: '紅燒牛腩飯', price: 150, color: '#8a3020' },
-  { id: 8, name: '韓式泡菜豬肉飯', price: 135, color: '#c05030' },
-  { id: 9, name: '日式照燒雞腿定食', price: 145, color: '#7a5020' },
-  { id: 10, name: '椒麻雞絲冷麵', price: 110, color: '#4a7a3a' },
-]
+onMounted(async () => {
+  try {
+    const data = await fetchHomeProducts()
+    newProducts.value = data.newProducts
+    chefRecommends.value = data.chefRecommends
+  } catch {
+    // 保持空陣列，不顯示商品
+  }
+})
 
 function goOrder() {
   router.push('/products/popular')

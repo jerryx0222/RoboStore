@@ -15,4 +15,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  build: {
+    // 建置輸出到 Spring Boot 靜態資源資料夾
+    outDir: '../robostore/src/main/resources/static',
+    emptyOutDir: true,
+  },
 })

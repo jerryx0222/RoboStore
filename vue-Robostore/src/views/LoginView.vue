@@ -18,9 +18,7 @@ async function handleLogin() {
     return
   }
   loading.value = true
-  // Simulate async (e.g., API call)
-  await new Promise((r) => setTimeout(r, 400))
-  const ok = login(account.value, password.value)
+  const ok = await login(account.value, password.value)
   loading.value = false
   if (ok) {
     const redirect = (route.query.redirect as string) || '/member'

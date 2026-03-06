@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { addToCart } from '../stores/cart'
+import { fetchProducts, type Product } from '../api'
 
 const route = useRoute()
 
@@ -15,60 +16,31 @@ const categoryTitles: Record<string, string> = {
 
 const categoryTitle = computed(() => categoryTitles[route.params.category as string] || '商品列表')
 
-interface Product {
-  id: number
-  name: string
-  price: number
-  color: string
-  emoji: string
-}
+const products = ref<Product[]>([])
+const loading = ref(false)
+const error = ref('')
 
-const allProducts: Record<string, Product[]> = {
-  drinks: [
-    { id: 101, name: '招牌珍珠奶茶', price: 65, color: '#c8864a', emoji: '🧋' },
-    { id: 102, name: '宇治抹茶拿鐵', price: 75, color: '#6a8a3a', emoji: '🍵' },
-    { id: 103, name: '宇治抹茶星冰樂', price: 80, color: '#7a9a40', emoji: '🍵' },
-    { id: 104, name: '草莓果昔', price: 70, color: '#d45870', emoji: '🍓' },
-    { id: 105, name: '百香果綠茶', price: 60, color: '#c8a820', emoji: '🌿' },
-    { id: 106, name: '芒果多多', price: 70, color: '#e8a820', emoji: '🥭' },
-    { id: 107, name: '蜂蜜檸檬茶', price: 55, color: '#e8d040', emoji: '🍋' },
-    { id: 108, name: '黑糖珍珠鮮奶', price: 75, color: '#6a4820', emoji: '🥛' },
-    { id: 109, name: '玫瑰荔枝氣泡飲', price: 75, color: '#e8789a', emoji: '🌹' },
-  ],
-  'main-dishes': [
-    { id: 201, name: '蜂蜜烤雞腿便當', price: 120, color: '#8a6030', emoji: '🍱' },
-    { id: 202, name: '蒜香排骨便當', price: 130, color: '#a05030', emoji: '🍱' },
-    { id: 203, name: '紅燒牛腩便當', price: 150, color: '#8a3020', emoji: '🍱' },
-    { id: 204, name: '薑燒豬肉便當', price: 110, color: '#c06030', emoji: '🍱' },
-    { id: 205, name: '鮭魚定食', price: 140, color: '#e87040', emoji: '🐟' },
-    { id: 206, name: '炸雞腿定食', price: 125, color: '#c87020', emoji: '🍗' },
-  ],
-  popular: [
-    { id: 301, name: '韓式炸雞', price: 160, color: '#c04020', emoji: '🍗' },
-    { id: 302, name: '日式拉麵', price: 180, color: '#a06020', emoji: '🍜' },
-    { id: 303, name: '台式肉燥飯', price: 80, color: '#8a5030', emoji: '🍚' },
-    { id: 304, name: '越式河粉', price: 130, color: '#d4a050', emoji: '🍜' },
-    { id: 305, name: '泰式綠咖哩', price: 140, color: '#5a8a30', emoji: '🥘' },
-    { id: 306, name: '牛肉漢堡', price: 150, color: '#c06020', emoji: '🍔' },
-  ],
-  meals: [
-    { id: 401, name: '主廚今日推薦', price: 145, color: '#7a5020', emoji: '👨‍🍳' },
-    { id: 402, name: '椒麻雞絲冷麵', price: 110, color: '#4a7a3a', emoji: '🍜' },
-    { id: 403, name: '麻婆豆腐飯', price: 100, color: '#c04830', emoji: '🍚' },
-    { id: 404, name: '三杯雞定食', price: 135, color: '#8a4020', emoji: '🍗' },
-  ],
-  seasonal: [
-    { id: 501, name: '南瓜濃湯套餐', price: 120, color: '#d86020', emoji: '🎃' },
-    { id: 502, name: '栗子蒙布朗', price: 90, color: '#8a6030', emoji: '🌰' },
-    { id: 503, name: '秋柿牛奶凍', price: 65, color: '#e87040', emoji: '🍮' },
-    { id: 504, name: '蘋果派', price: 75, color: '#c05030', emoji: '🥧' },
-  ],
+async function loadProducts(category: string) {
+  loading.value = true
+  error.value = ''
+  try {
+    products.value = await fetchProducts(category)
+  } catch {
+    error.value = '無法載入商品，請確認後端服務是否啟動'
+  } finally {
+    loading.value = false
+  }
 }
 
 const PAGE_SIZE = 9
 const currentPage = ref(1)
 
-const products = computed(() => allProducts[route.params.category as string] || [])
+watch(
+  () => route.params.category as string,
+  (cat) => { currentPage.value = 1; loadProducts(cat) },
+  { immediate: true },
+)
+
 const totalPages = computed(() => Math.ceil(products.value.length / PAGE_SIZE))
 const pagedProducts = computed(() => {
   const start = (currentPage.value - 1) * PAGE_SIZE
@@ -83,6 +55,9 @@ function goPage(p: number) {
 <template>
   <div class="products-view">
     <div class="page-title">{{ categoryTitle }}</div>
+
+    <div v-if="loading" class="status-msg">載入中...</div>
+    <div v-else-if="error" class="status-msg error">{{ error }}</div>
 
     <div class="product-grid">
       <div v-for="p in pagedProducts" :key="p.id" class="product-card">
