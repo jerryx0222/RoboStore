@@ -16,17 +16,28 @@ public class myUser {
     public static final int LEVEL_SYSTEM_DEV   =  0;  // 系統開發者
     public static final int LEVEL_SYSTEM_ADMIN =  1;  // 系統管理者
     public static final int LEVEL_SYSTEM_USER  =  2;  // 系統使用者
+    // 1.廠商管理
+
     // 廠商層級
     public static final int LEVEL_VENDOR_DEV   = 10;  // 廠商開發者
+
     public static final int LEVEL_VENDOR_ADMIN = 11;  // 廠商管理者
+    // 1.分店管理 
+    // 2.多店訂單管理
+
     public static final int LEVEL_VENDOR_USER  = 12;  // 廠商使用者
+    // 3.單店訂單管理
+
     // 個人層級
     public static final int LEVEL_PERSONAL_DEV   = 20; // 個人開發者
     public static final int LEVEL_PERSONAL_ADMIN = 21; // 個人管理者
+    
     public static final int LEVEL_PERSONAL_USER  = 22; // 個人使用者
+    // 1.現場:訂購/繳費/取貨
+    // 2.網路:訂購/繳費/取貨
 
     public static final int LEVEL_GUEST  = 99; // 訪客
-    
+    // 3.現場:訂購/繳費/取貨
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

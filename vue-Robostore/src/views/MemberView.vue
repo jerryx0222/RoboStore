@@ -332,24 +332,26 @@ function levelLabel(level: number): string {
       <!-- 廠商管理（系統開發者 / 系統管理者） -->
       <template v-if="canManageVendors">
         <div class="section-subtitle vendor-subtitle-row" style="margin-top: 20px;">
-          <span>廠商管理</span>
-          <button class="btn-add" @click="openAdd">＋ 新增廠商</button>
+          <span>實體店管理</span>
+          <button class="btn-add" @click="openAdd">＋ 新增實體店</button>
         </div>
         <div class="vendor-panel">
           <table class="vendor-table">
             <thead>
               <tr>
-                <th>廠商名稱</th>
+                <th>實體店ID</th>
+                <th>實體店名稱</th>
                 <th>聯絡電話</th>
                 <th>地址</th>
                 <th>分店名稱</th>
-                <th>集團名稱</th>
+                <th>品牌名稱</th>
                 <th>狀態</th>
                 <th>操作</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="vendor in vendors" :key="vendor.id">
+                <td>{{ vendor.id }}</td>
                 <td>{{ vendor.name }}</td>
                 <td>{{ vendor.phone }}</td>
                 <td>{{ vendor.address }}</td>

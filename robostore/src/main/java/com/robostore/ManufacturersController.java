@@ -24,7 +24,7 @@ public class ManufacturersController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody myManufacturers body) {
         if (body.getName() == null || body.getName().isBlank()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "廠商名稱不得為空"));
+            return ResponseEntity.badRequest().body(Map.of("error", "實體店名稱不得為空"));
         }
         return ResponseEntity.ok(repo.save(body));
     }
